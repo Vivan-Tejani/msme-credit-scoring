@@ -12,7 +12,7 @@ except ImportError:
     XGB_AVAILABLE = False
 
 try:
-    import lightgbm as lgb 
+    import lightgbm as lgb #type:ignore
     LGB_AVAILABLE = True
 except ImportError:
     LGB_AVAILABLE = False

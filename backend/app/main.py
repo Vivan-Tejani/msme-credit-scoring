@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.routers import score, fraud, history
 
 app = FastAPI(
     title="MSME Credit Scoring API",
@@ -14,6 +15,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(score.router)
+app.include_router(fraud.router)
+app.include_router(history.router)
 
 @app.get("/")
 async def root():

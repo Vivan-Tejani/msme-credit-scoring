@@ -1,8 +1,8 @@
 import random
 import numpy as np
 import pandas as pd
+from typing import Dict, List, Any
 from datetime import datetime, timedelta
-from typing import Dict, List, Tuple
 from faker import Faker
 
 faker = Faker("en_IN")
@@ -13,7 +13,7 @@ class MSMEDataGenerator:
         self.gstin = gstin
         self.seed = seed
         self.rng = np.random.RandomState(seed)
-        self.faker_seed = random.Random(seed)
+        random.seed(seed)
         faker.seed_instance(seed)
         
         self.business_profile = self._generate_business_profile()
@@ -35,8 +35,15 @@ class MSMEDataGenerator:
         count = min(self.business_profile["customer_count"], 50)
         counterparties = []
         for _ in range(count):
+            cp_gstin = (
+                f"{self.rng.randint(10, 99)}"
+                f"{''.join(faker.random_uppercase_letter() for _ in range(5))}"
+                f"{self.rng.randint(1000, 9999)}"
+                f"{faker.random_uppercase_letter()}1Z"
+                f"{faker.random_uppercase_letter()}{faker.random_digit()}"
+            )
             counterparties.append({
-                "gstin": f"{self.rng.randint(10, 99)}{faker.random_uppercase_letter()*5}{self.rng.randint(1000, 9999)}{faker.random_uppercase_letter()}1Z{faker.random_uppercase_letter()}{faker.random_digit()}",
+                "gstin": cp_gstin,
                 "name": faker.company(),
                 "type": random.choice(["b2b", "b2c", "export"]),
                 "weight": self.rng.exponential(1.0),
@@ -110,7 +117,7 @@ class MSMEDataGenerator:
                     "time": f"{self.rng.randint(0, 23):02d}:{self.rng.randint(0, 59):02d}",
                     "amount": round(amount, 2),
                     "type": "credit" if is_inflow else "debit",
-                    "counterparty_vpa": f"{faker.random_lower_case_letter()*8}@{random.choice(['ybl', 'okaxis', 'okhdfcbank', 'paytm'])}",
+                    "counterparty_vpa": f"{''.join(faker.random_lowercase_letter() for _ in range(8))}@{random.choice(['ybl', 'okaxis', 'okhdfcbank', 'paytm'])}",
                     "counterparty_name": faker.name() if not is_inflow else faker.company(),
                     "narration": random.choice(["PAYMENT", "SETTLEMENT", "INVOICE", "REFUND"]),
                 })
@@ -134,3 +141,47 @@ class MSMEDataGenerator:
                     "to_state": self.rng.choice([s for s in ["27", "29", "33", "07", "09", "19"] if s != self.gstin[:2]], p=[0.2, 0.2, 0.2, 0.2, 0.15, 0.05]),
                     "vehicle_type": random.choice(["road", "rail", "air"]),
                 })
+        
+        return pd.DataFrame(eway_bills)
+    
+    def generate_mca_filings(self) -> Dict:
+        age = self.business_profile["age_months"]
+        filings = []
+        
+        for year in range(max(0, age // 12 - 5), age // 12 + 1):
+            fy = datetime.now().year - (age // 12 - year)
+            filings.append({
+                "type": "annual_return",
+                "fy": f"{fy}-{fy+1}",
+                "date": f"{fy+1}-10-{self.rng.randint(1, 31)}",
+                "status": random.choices(["filed", "filed", "filed", "delayed"], weights=[0.7, 0.15, 0.1, 0.05])[0],
+            })
+        
+        directors = []
+        for i in range(self.rng.randint(1, 4)):
+            directors.append({
+                "name": faker.name(),
+                "din": f"{self.rng.randint(10000000, 99999999)}",
+                "appointed_date": (datetime.now() - timedelta(days=self.rng.randint(180, age * 30))).strftime("%Y-%m-%d"),
+                "other_companies": self.rng.randint(0, 5),
+            })
+        
+        return {
+            "gstin": self.gstin,
+            "business_age_months": age,
+            "legal_structure": random.choice(["proprietorship", "partnership", "private_limited", "llp"]),
+            "registered_office_changes": self.rng.randint(0, 3),
+            "charges_created": self.rng.randint(0, 5),
+            "charges_satisfied": max(0, self.rng.randint(-2, 5)),
+            "filings": filings,
+            "directors": directors,
+        }
+    
+    def generate_all(self) -> Dict[str, Any]:
+        return {
+            "gstin": self.gstin,
+            "gst_invoices": self.generate_gst_invoices(),
+            "upi_transactions": self.generate_upi_transactions(),
+            "eway_bills": self.generate_eway_bills(),
+            "mca_data": self.generate_mca_filings(),
+        }

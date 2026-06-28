@@ -128,8 +128,16 @@ class MSMEDataGenerator:
         invoices = self.generate_gst_invoices(months)
         eway_bills = []
         
+        all_states = ["27", "29", "33", "07", "09", "19"]
+        other_states = [s for s in all_states if s != self.gstin[:2]]
+        
+        if len(other_states) == 0:
+            other_states = all_states
+        
         for _, inv in invoices.iterrows():
             if self.rng.random() < 0.5:
+                to_state = self.rng.choice(other_states)
+                
                 eway_bills.append({
                     "gstin": self.gstin,
                     "eway_bill_id": f"EB{inv['invoice_id'][3:]}",
@@ -138,7 +146,7 @@ class MSMEDataGenerator:
                     "value": round(inv["total_amount"] * self.rng.uniform(0.9, 1.0), 2),
                     "distance_km": self.rng.randint(10, 2000),
                     "from_state": self.gstin[:2],
-                    "to_state": self.rng.choice([s for s in ["27", "29", "33", "07", "09", "19"] if s != self.gstin[:2]], p=[0.2, 0.2, 0.2, 0.2, 0.15, 0.05]),
+                    "to_state": to_state,
                     "vehicle_type": random.choice(["road", "rail", "air"]),
                 })
         

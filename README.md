@@ -4,7 +4,7 @@ An alternative credit scoring and fraud detection system for Indian MSMEs. Enter
 
 > Trained on synthetic data (5,000 samples). AUC ~0.66 on held-out test set.
 
-[Dashboard](image.png)
+![Dashboard](image.png)
 
 ## Features
 

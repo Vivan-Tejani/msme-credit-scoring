@@ -1,20 +1,20 @@
 # MSME CreditIQ
 
-An alternative credit scoring and fraud detection system for Indian MSMEs. Enter a GSTIN and loan amount to get a credit score, probability of default, recommended loan amount, and a breakdown of the top factors driving the decision — all derived from the business's digital transaction footprint instead of a CIBIL score.
+An alternative credit scoring and fraud detection system for Indian MSMEs. Enter a GSTIN and loan amount to get a credit score, probability of default, recommended loan amount, and a breakdown of the top factors driving the decision, all derived from the business's digital transaction footprint instead of a CIBIL score.
 
-> Trained on synthetic data (5,000 samples). AUC ~0.66 on held-out test set. Would improve significantly with real MSME transaction data.
+> Trained on synthetic data (5,000 samples). AUC ~0.66 on held-out test set.
 
 [Dashboard](image.png)
 
 ## Features
 
-- **Credit Score (300–900)** — Risk-banded score with HIGH / MEDIUM / LOW classification
-- **Probability of Default** — Model output as a percentage with visual indicator
-- **Recommended Loan Amount** — Adjusted from requested amount based on repayment capacity
-- **SHAP Explainability** — Top factors affecting the score, with positive/negative contribution breakdown
-- **Score Trend (12 Months)** — Historical score chart with approval threshold line
-- **Transaction Network Graph** — Maps related entities, flags circular transactions and fraudulent nodes
-- **Fraud Check** — Graph-based anomaly detection using NetworkX (cycles, PageRank, community detection)
+- **Credit Score (300–900)**: Risk-banded score with HIGH / MEDIUM / LOW classification
+- **Probability of Default**: Model output as a percentage with visual indicator
+- **Recommended Loan Amount**: Adjusted from requested amount based on repayment capacity
+- **SHAP Explainability**: Top factors affecting the score, with positive/negative contribution breakdown
+- **Score Trend (12 Months)**: Historical score chart with approval threshold line
+- **Transaction Network Graph**: Maps related entities, flags circular transactions and fraudulent nodes
+- **Fraud Check**: Graph-based anomaly detection using NetworkX (cycles, PageRank, community detection)
 
 ## Tech Stack
 

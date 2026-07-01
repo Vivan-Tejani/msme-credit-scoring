@@ -12,9 +12,6 @@ ENV/
 dist/
 build/
 
-# Models 
-backend/ml_models/*.pkl
-
 # Data
 backend/data/mock_data/*.csv
 backend/data/mock_data/*.json

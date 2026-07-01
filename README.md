@@ -28,8 +28,6 @@ An alternative credit scoring and fraud detection system for Indian MSMEs. Enter
 | Database | PostgreSQL |
 | Cache | Redis |
 
-## Running Locally
-
 ### Prerequisites
 - Python 3.11+
 - Node.js 18+
@@ -89,7 +87,3 @@ GET  /v1/score/{gstin}/history
 - Revenue — `revenue_growth_3m`, `avg_invoice_value`, `eway_bill_value`
 - Compliance — `mca_compliance_score`, `gst_filing_timeliness_score`, `not_filed_ratio`
 - Risk signals — `customer_concentration_hhi`, `circular_flow_score`, `invoice_regularity_score`
-
-## Repo
-
-[github.com/Vivan-Tejani/msme-credit-scoring](https://github.com/Vivan-Tejani/msme-credit-scoring)
